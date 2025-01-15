@@ -27,7 +27,7 @@ void make_websocket_session(boost::beast::ssl_stream<boost::beast::tcp_stream> s
 }
 
 namespace {
-    const std::map<std::string_view, std::string_view> ext_mimetype_map = {{".htm", "text/html"}, {".html", "text/html"}, {".php", "text/html"}, {".css", "text/css"},
+    const std::map<std::string, std::string_view> ext_mimetype_map = {{".htm", "text/html"}, {".html", "text/html"}, {".php", "text/html"}, {".css", "text/css"},
         {".txt", "text/plain"}, {".js", "application/javascript"}, {".json", "application/json"}, {".xml", "application/xml"}, {".swf", "application/x-shockwave-flash"},
         {".flv", "video/x-flv"}, {".png", "image/png"}, {".jpe", "image/jpeg"}, {".jpeg", "image/jpeg"}, {".jpg", "image/jpeg"}, {".gif", "image/gif"}, {".bmp", "image/bmp"},
         {".ico", "image/vnd.microsoft.icon"}, {".tiff", "image/tiff"}, {".tif", "image/tiff"}, {".svg", "image/svg+xml"}, {".svgz", "image/svg+xml"}};
@@ -43,7 +43,7 @@ boost::beast::string_view mime_type(boost::beast::string_view path) {
     }();
     auto ext_lower = std::string(ext);
     std::transform(ext.begin(), ext.end(), ext_lower.begin(), [](auto chr) { return std::tolower(chr); });
-    return ext_mimetype_map.contains(ext) ? ext_mimetype_map.at(ext) : "application/octet-stream";
+    return ext_mimetype_map.contains(ext_lower) ? ext_mimetype_map.at(ext_lower) : "application/octet-stream";
 }
 
 std::string path_cat(boost::beast::string_view base, boost::beast::string_view path) {
@@ -340,7 +340,7 @@ public:
             fail(ec, "listener open");
             return;
         }
-        log_info << endpoint.address() << endpoint.port();
+        log_info << endpoint.address() << ":" << endpoint.port();
         acceptor_.set_option(boost::asio::socket_base::reuse_address(true), ec);
         if (ec) {
             fail(ec, "listener set_option");
