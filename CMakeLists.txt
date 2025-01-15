@@ -33,11 +33,12 @@ link_directories (${Boost_LIB_DIR} ${OPENSSL_LIB_DIR})
 
 add_executable (webserver
         main.cpp
-        webserver-main.cpp
+        webserver.cpp
         rest-process.cpp
         ws-process.cpp
         http-utils.cpp
-        Http.cpp
+        Log.cpp
+        # Http.cpp
         # ${minizip_DIR}/zip.c
         # ${minizip_DIR}/unzip.c
         # ${minizip_DIR}/mztools.c
