@@ -26,79 +26,24 @@ void make_websocket_session(boost::beast::ssl_stream<boost::beast::tcp_stream> s
     std::make_shared<ssl_websocket_session>(std::move(stream))->run(std::move(req));
 }
 
+namespace {
+    const std::map<std::string_view, std::string_view> ext_mimetype_map = {{".htm", "text/html"}, {".html", "text/html"}, {".php", "text/html"}, {".css", "text/css"},
+        {".txt", "text/plain"}, {".js", "application/javascript"}, {".json", "application/json"}, {".xml", "application/xml"}, {".swf", "application/x-shockwave-flash"},
+        {".flv", "video/x-flv"}, {".png", "image/png"}, {".jpe", "image/jpeg"}, {".jpeg", "image/jpeg"}, {".jpg", "image/jpeg"}, {".gif", "image/gif"}, {".bmp", "image/bmp"},
+        {".ico", "image/vnd.microsoft.icon"}, {".tiff", "image/tiff"}, {".tif", "image/tiff"}, {".svg", "image/svg+xml"}, {".svgz", "image/svg+xml"}};
+}
+
 boost::beast::string_view mime_type(boost::beast::string_view path) {
-    using boost::beast::iequals;
+    // using boost::beast::iequals;
     auto const ext = [&path] {
         auto const pos = path.rfind(".");
         if (pos == boost::beast::string_view::npos)
             return boost::beast::string_view{};
         return path.substr(pos);
     }();
-    if (iequals(ext, ".htm")) {
-        return "text/html";
-    }
-    if (iequals(ext, ".html")) {
-        return "text/html";
-    }
-    if (iequals(ext, ".php")) {
-        return "text/html";
-    }
-    if (iequals(ext, ".css")) {
-        return "text/css";
-    }
-    if (iequals(ext, ".txt")) {
-        return "text/plain";
-    }
-    if (iequals(ext, ".js")) {
-        return "application/javascript";
-    }
-    if (iequals(ext, ".json")) {
-        return "application/json";
-    }
-    if (iequals(ext, ".xml")) {
-        return "application/xml";
-    }
-    if (iequals(ext, ".swf")) {
-        return "application/x-shockwave-flash";
-    }
-    if (iequals(ext, ".flv")) {
-        return "video/x-flv";
-    }
-    if (iequals(ext, ".png")) {
-        return "image/png";
-    }
-    if (iequals(ext, ".jpe")) {
-        return "image/jpeg";
-    }
-    if (iequals(ext, ".jpeg")) {
-        return "image/jpeg";
-    }
-    if (iequals(ext, ".jpg")) {
-        return "image/jpeg";
-    }
-    if (iequals(ext, ".gif")) {
-        return "image/gif";
-    }
-    if (iequals(ext, ".bmp")) {
-        return "image/bmp";
-    }
-    if (iequals(ext, ".ico")) {
-        return "image/vnd.microsoft.icon";
-    }
-    if (iequals(ext, ".tiff")) {
-        return "image/tiff";
-    }
-    if (iequals(ext, ".tif")) {
-        return "image/tiff";
-    }
-    if (iequals(ext, ".svg")) {
-        return "image/svg+xml";
-    }
-    if (iequals(ext, ".svgz")) {
-        return "image/svg+xml";
-    }
-    // return "application/text";
-    return "application/octet-stream";
+    auto ext_lower = std::string(ext);
+    std::transform(ext.begin(), ext.end(), ext_lower.begin(), [](auto chr) { return std::tolower(chr); });
+    return ext_mimetype_map.contains(ext) ? ext_mimetype_map.at(ext) : "application/octet-stream";
 }
 
 std::string path_cat(boost::beast::string_view base, boost::beast::string_view path) {

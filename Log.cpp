@@ -13,7 +13,7 @@
 
 namespace util::Log {
     namespace {
-        std::string log_folder = "/mnt/robotSataDisk/robot_manager_logs"; // becase first so write
+        std::string log_folder = "/var/log/webserver"; // becase first so write
         std::atomic<bool> clean_thread_stop_flag = false;
         std::shared_ptr<std::thread> clean_thread;
     } // namespace

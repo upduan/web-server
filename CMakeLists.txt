@@ -16,7 +16,6 @@ set (Boost_USE_STATIC_RUNTIME OFF)
 
 set (CMAKE_CXX_FLAGS " -DBOOST_LOG_DYN_LINK")
 
-# find_package (Boost)
 # find_package (Boost REQUIRED COMPONENTS json url)
 set (Boost_DIR /opt/homebrew/opt/boost)
 set (Boost_INCLUDE_DIR ${Boost_DIR}/include)
@@ -38,11 +37,6 @@ add_executable (webserver
         ws-process.cpp
         http-utils.cpp
         Log.cpp
-        # Http.cpp
-        # ${minizip_DIR}/zip.c
-        # ${minizip_DIR}/unzip.c
-        # ${minizip_DIR}/mztools.c
-        # ${minizip_DIR}/ioapi.c
 )
 
 # vs MT/MTd
